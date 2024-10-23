@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Vallesencia - Formulario</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="img/favicon.ico" rel="icon">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Formulario Start -->
+    <div class="container my-5">
+        <div class="section-header text-center">
+            <h2>Completa tu compra</h2>
+            <p>Llena los detalles para finalizar la compra y recibir tu pedido</p>
+        </div>
+        <form id="checkout-form">
+            <div class="form-group">
+                <label for="nombre">Nombre del Cliente:</label>
+                <input type="text" id="nombre" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="direccion">Dirección de Envío:</label>
+                <input type="text" id="direccion" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="pago">Medio de Pago:</label>
+                <select id="pago" class="form-control" required>
+                    <option value="Yape">Yape</option>
+                    <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                    <option value="Efectivo">Efectivo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <h4>Resumen del Pedido</h4>
+                <ul id="resumen"></ul>
+                <h5>Total: s/.<span id="total"></span></h5>
+            </div>
+            <div class="text-center">
+                <a class="btn btn-danger" href="feature.html" role="button">Volver</a>
+                <button type="button" class="btn btn-success" onclick="sendOrder()">Finalizar Compra</button>
+            </div>
+        </form>
+    </div>
+    <!-- Formulario End -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const products = JSON.parse(localStorage.getItem('products'));
+
+            const resumen = document.getElementById('resumen');
+            const totalElement = document.getElementById('total');
+            let total = 0;
+
+            const productDetails = {
+            miel1kg: { name: "Miel de Abeja (1 Kilo)", price: 55 },
+            miel500gr: { name: "Miel de Abeja (500 gr)", price: 30 },
+            miel250gr: { name: "Miel de Abeja (250 gr)", price: 20 },
+            cafe500gr: { name: "Café (500 gr)", price: 35 },
+            cafe250gr: { name: "Café (250 gr)", price: 25 },
+            propoleo: { name: "Propóleo (30 ml)", price: 22 },
+            polen150gr: { name: "Polen (150 gr)", price: 15 },
+            polen60gr: { name: "Polen (60 gr)", price: 8 }
+        };
+
+        for (let product in products) {
+            if (products[product] > 0) {
+                resumen.innerHTML += `<li>${productDetails[product].name}: ${products[product]} unidades</li>`;
+                total += products[product] * productDetails[product].price;
+            }
+        }
+
+        totalElement.innerText = total;
+    });
+
+        function sendOrder() {
+            const nombre = document.getElementById('nombre').value;
+            const direccion = document.getElementById('direccion').value;
+            const pago = document.getElementById('pago').value;
+            const resumen = document.getElementById('resumen').innerText;
+            const total = document.getElementById('total').innerText;
+
+            const mensaje = `Hola, soy ${nombre}. Mi dirección es ${direccion}. Quiero realizar un pedido con los siguientes productos:\n${resumen}\nTotal: s/.${total}\nMétodo de pago: ${pago}.`;
+
+            const url = `https://wa.me/51960430573?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
